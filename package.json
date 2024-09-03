@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@fastify/static": "^7.0.4",
     "fastify": "^4.28.1"
   },
   "devDependencies": {
@@ -9,7 +10,7 @@
     "typescript": "^5.5.4"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "NODE_ENV=production tsc -p tsconfig.json",
     "start": "nodemon --exec ts-node index.ts"
   }
 }
