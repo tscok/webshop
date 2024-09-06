@@ -1,12 +1,12 @@
-import { ProductList } from '../types'
+import { useCallback } from 'react'
+import productsClient from '../api/products-client'
+import useQuery from './use-query'
 
-// TODO: fetch data from server
-const productList: ProductList = {
-  coffee: { name: 'coffee', price: 1 },
-  orange: { name: 'orange', price: 2 },
-  bread: { name: 'bread', price: 3 },
-}
-
-export function useProducts(): ProductList {
-  return productList
+export function useProducts() {
+  const callback = useCallback(
+    async () => await productsClient.getProducts(),
+    []
+  )
+  const { data } = useQuery(callback)
+  return data
 }

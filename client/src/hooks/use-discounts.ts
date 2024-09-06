@@ -1,16 +1,12 @@
-import { DiscountList } from '../types'
-import { formatMoney } from '../utils/format-money'
+import { useCallback } from 'react'
+import discountsClient from '../api/discounts-client'
+import useQuery from './use-query'
 
-// TODO: fetch data from server
-const discountList: DiscountList = {
-  orange: {
-    count: 2,
-    info: `Today's special: Get 2 for ${formatMoney(3)}`,
-    name: 'orange',
-    price: 1.5,
-  },
-}
-
-export function useDiscounts(): DiscountList {
-  return discountList
+export function useDiscounts() {
+  const callback = useCallback(
+    async () => await discountsClient.getDiscounts(),
+    []
+  )
+  const { data } = useQuery(callback)
+  return data
 }
