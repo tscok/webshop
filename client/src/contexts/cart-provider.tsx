@@ -1,8 +1,8 @@
 import { createContext, PropsWithChildren, useState } from 'react'
-import { CartItem, ProductName } from '../types'
+import { CartItem, ProductName } from '../../../types'
 import { useCartItems } from '../hooks/use-cart-items'
-import { getTotalCount } from '../utils/cart-counts'
-import { addNumberOfX, removeNumberOfX } from '../utils/from-array'
+import cartClient from '../api/cart-client'
+import { getErrorMessage } from '../api/get-error-message'
 
 type CartType = {
   items: CartItem[]
@@ -11,29 +11,54 @@ type CartType = {
   total: number
 }
 
+// TODO: move calculation to server
+function getCartTotal(items: CartItem[]): number {
+  return items.reduce(
+    (total, item) => total + (item.count * item.price - item.discount),
+    0
+  )
+}
+
 export const CartContext = createContext<CartType>({} as CartType)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
+  // TODO: store data on server
   const [cart, setCart] = useState<ProductName[]>([])
 
-  // TODO: fetch data from server
+  // TODO: fetch cart data from server
   const items = useCartItems(cart)
 
-  const handleAdd = (name: ProductName) => {
-    // TODO: implement server action
-    setCart((prev) => addNumberOfX(1, name, prev))
+  const handleAdd = async (name: ProductName) => {
+    // TODO: handle changes on server
+    setCart((prev) => [...prev, name])
+
+    try {
+      await cartClient.addItem(name)
+    } catch (error) {
+      throw new Error(getErrorMessage(error))
+    }
   }
 
-  const handleRemove = (name: ProductName) => {
-    // TODO: implement server action
-    setCart((prev) => removeNumberOfX(1, name, prev))
+  const handleRemove = async (name: ProductName) => {
+    // TODO: handle changes on server
+    setCart((prev) => {
+      const lastIndexOfName = prev.lastIndexOf(name)
+      // returns copy of `prev` without last occurrence of `name`
+      return prev.toSpliced(lastIndexOfName, 1)
+    })
+
+    try {
+      await cartClient.removeItem(name)
+    } catch (error) {
+      throw new Error(getErrorMessage(error))
+    }
   }
 
   const value = {
     items,
     onAdd: handleAdd,
     onRemove: handleRemove,
-    total: getTotalCount(items),
+    total: getCartTotal(items),
   }
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

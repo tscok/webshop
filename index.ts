@@ -1,16 +1,21 @@
-import fastify from 'fastify'
-import staticContent, { FILE_NAME } from './plugins/static-content'
+import Fastify from 'fastify'
+import plugins from './plugins'
+import routes from './routes'
 
-const server = fastify()
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
-server.register(staticContent)
+const fastify = Fastify()
 
-server.get('/', (_, reply) => reply.sendFile(FILE_NAME))
+fastify.register(plugins.staticContent)
 
-server.listen({ port: 8080 }, (err, address) => {
+fastify.register(routes.cart)
+fastify.register(routes.discounts)
+fastify.register(routes.products)
+
+fastify.listen({ port: 3000, host: HOST }, (err, address) => {
   if (err) {
-    console.error(err)
+    fastify.log.error(err)
     process.exit(1)
   }
-  console.log(`Server listening at ${address}`)
+  fastify.log.info(`Server is now listening on ${address}`)
 })

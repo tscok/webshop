@@ -43,7 +43,7 @@ export const ProductItem = ({
         </Typography>
       </Box>
       <Button onClick={onAddToCart} variant="contained">
-        Buy
+        Add to Cart
       </Button>
     </Stack>
   </Paper>

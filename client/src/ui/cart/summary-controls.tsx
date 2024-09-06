@@ -1,6 +1,6 @@
-import { ButtonGroup, Button } from '@mui/material'
-import AddSharpIcon from '@mui/icons-material/AddSharp'
-import RemoveSharpIcon from '@mui/icons-material/RemoveSharp'
+import { IconButton } from '@mui/material'
+import IncreaseIcon from '@mui/icons-material/AddCircleOutline'
+import DecreaseIcon from '@mui/icons-material/RemoveCircleOutline'
 
 export const SummaryControls = ({
   onIncrease,
@@ -9,12 +9,22 @@ export const SummaryControls = ({
   onIncrease: () => void
   onDecrease: () => void
 }) => (
-  <ButtonGroup disableElevation variant="text">
-    <Button onClick={onIncrease} size="small" aria-label="increase">
-      <AddSharpIcon fontSize="small" />
-    </Button>
-    <Button onClick={onDecrease} size="small" aria-label="decrease">
-      <RemoveSharpIcon fontSize="small" />
-    </Button>
-  </ButtonGroup>
+  <div>
+    <IconButton
+      aria-label="increase"
+      color="primary"
+      onClick={onIncrease}
+      size="small"
+    >
+      <IncreaseIcon fontSize="small" />
+    </IconButton>
+    <IconButton
+      aria-label="decrease"
+      color="primary"
+      onClick={onDecrease}
+      size="small"
+    >
+      <DecreaseIcon fontSize="small" />
+    </IconButton>
+  </div>
 )
