@@ -1,8 +1,8 @@
-import { CartItem, ProductName } from '../../../types'
+import { ProductName } from '../../../types'
 import ApiClient from './api-client'
 
 class CartClient extends ApiClient {
-  async getCart(): Promise<CartItem[]> {
+  async getCart(): Promise<ProductName[]> {
     return this.get('/cart')
   }
 

@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useState } from 'react'
+import { createContext, PropsWithChildren, useCallback } from 'react'
 import { CartItem, ProductName } from '../../../types'
 import { useCartItems } from '../hooks/use-cart-items'
 import cartClient from '../api/cart-client'
-import { getErrorMessage } from '../api/get-error-message'
+import useQuery from '../hooks/use-query'
 
 type CartType = {
   items: CartItem[]
@@ -22,36 +22,18 @@ function getCartTotal(items: CartItem[]): number {
 export const CartContext = createContext<CartType>({} as CartType)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  // TODO: store data on server
-  const [cart, setCart] = useState<ProductName[]>([])
+  const queryCallback = useCallback(async () => await cartClient.getCart(), [])
+  const { data = [], refetch } = useQuery(queryCallback)
+  const items = useCartItems(data)
 
-  // TODO: fetch cart data from server
-  const items = useCartItems(cart)
-
-  const handleAdd = async (name: ProductName) => {
-    // TODO: handle changes on server
-    setCart((prev) => [...prev, name])
-
-    try {
-      await cartClient.addItem(name)
-    } catch (error) {
-      throw new Error(getErrorMessage(error))
-    }
+  const handleAdd = (name: ProductName) => {
+    cartClient.addItem(name)
+    refetch()
   }
 
-  const handleRemove = async (name: ProductName) => {
-    // TODO: handle changes on server
-    setCart((prev) => {
-      const lastIndexOfName = prev.lastIndexOf(name)
-      // returns copy of `prev` without last occurrence of `name`
-      return prev.toSpliced(lastIndexOfName, 1)
-    })
-
-    try {
-      await cartClient.removeItem(name)
-    } catch (error) {
-      throw new Error(getErrorMessage(error))
-    }
+  const handleRemove = (name: ProductName) => {
+    cartClient.removeItem(name)
+    refetch()
   }
 
   const value = {
