@@ -1,5 +1,6 @@
 import fastifyPlugin from 'fastify-plugin'
 import { DiscountList } from '../types'
+import { FastifyPluginCallback } from 'fastify'
 
 const discounts: DiscountList = {
   orange: {
@@ -9,8 +10,12 @@ const discounts: DiscountList = {
   },
 }
 
-export default fastifyPlugin(async (fastify) => {
+const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.get('/discounts', (req, reply) => {
     reply.send({ data: discounts })
   })
-})
+
+  done()
+}
+
+export default fastifyPlugin(pluginCallback)

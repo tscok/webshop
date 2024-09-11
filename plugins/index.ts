@@ -1,3 +1,4 @@
-import staticContent from './static-content'
+import client from './client'
+import session from './session'
 
-export default { staticContent }
+export default { client, session }

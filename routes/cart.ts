@@ -1,6 +1,7 @@
+import { FastifyPluginCallback } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 
-export default fastifyPlugin(async (fastify) => {
+const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.get('/cart', (req, reply) => {
     reply.send({ data: [] })
   })
@@ -12,4 +13,8 @@ export default fastifyPlugin(async (fastify) => {
   fastify.delete('/cart', (req, reply) => {
     reply.send(req.body)
   })
-})
+
+  done()
+}
+
+export default fastifyPlugin(pluginCallback)
