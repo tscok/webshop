@@ -6,7 +6,8 @@ const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
 const fastify = Fastify()
 
-fastify.register(plugins.staticContent)
+fastify.register(plugins.session)
+fastify.register(plugins.client)
 
 fastify.register(routes.cart)
 fastify.register(routes.discounts)
