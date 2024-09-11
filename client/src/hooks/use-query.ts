@@ -25,5 +25,9 @@ export default function useQuery<T>(request: () => Promise<T>) {
     fetchCallback()
   }, [fetchCallback])
 
-  return state
+  function refetch() {
+    fetchCallback()
+  }
+
+  return { ...state, refetch }
 }
