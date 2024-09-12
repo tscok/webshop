@@ -131,3 +131,6 @@ dist
 
 # Session cookies
 sessions/
+
+# Database
+database/
