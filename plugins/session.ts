@@ -7,14 +7,6 @@ import sessionFileStore from 'session-file-store'
 import { SESSION_KEY, SESSION_TTL } from '../config'
 import { FastifyPluginCallback } from 'fastify'
 
-// Extend fastify.session with custom type
-declare module 'fastify' {
-  interface Session {
-    cart: string[]
-    id?: number
-  }
-}
-
 type FileStoreType = { new (params?: Record<string, unknown>): SessionStore }
 const FileStore: FileStoreType = sessionFileStore(fastifySession)
 

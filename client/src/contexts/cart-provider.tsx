@@ -26,13 +26,13 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   const { data = [], refetch } = useQuery(queryCallback)
   const items = useCartItems(data)
 
-  const handleAdd = (name: ProductName) => {
-    cartClient.addItem(name)
+  const handleAdd = async (name: ProductName) => {
+    await cartClient.addItem(name)
     refetch()
   }
 
-  const handleRemove = (name: ProductName) => {
-    cartClient.removeItem(name)
+  const handleRemove = async (name: ProductName) => {
+    await cartClient.removeItem(name)
     refetch()
   }
 
