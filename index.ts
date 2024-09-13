@@ -12,7 +12,6 @@ fastify.register(plugins.client)
 fastify.register(plugins.database)
 
 fastify.register(routes.cart)
-fastify.register(routes.discounts)
 fastify.register(routes.products)
 
 async function start() {

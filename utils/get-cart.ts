@@ -1,19 +1,14 @@
-import { discounts, products } from '../data'
-import { Cart, ProductName } from '../types'
+import { Cart, CartItem, Product, ProductName } from '../types'
 import { getProductCount } from './get-product-count'
 import { getCartTotal } from './get-cart-total'
-
-const DEFAULT_CART: Cart = { items: [], total: 0 }
+import { productMap } from './product-map'
 
 export function getCart(productNames: ProductName[]): Cart {
-  if (!discounts || !products) return DEFAULT_CART
-
   const productCount = getProductCount(productNames)
 
-  const items = [...new Set(productNames)].map((productName) => {
-    const product = products[productName]
+  const items = [...new Set(productNames)].map<CartItem>((productName) => {
+    const { discount, ...product } = productMap.get(productName) as Product
     const count = productCount[productName] ?? 1
-    const discount = discounts[product.name]
 
     return {
       ...product,
