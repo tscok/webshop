@@ -12,3 +12,5 @@ export type CartItem = Product & {
   count: number
   discount: number
 }
+
+export type RequestBody = { data: ProductName }

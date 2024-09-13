@@ -1,27 +1,36 @@
-import { FastifyPluginCallback } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
+import { FastifyInstance, FastifyPluginCallback } from 'fastify'
+import { ProductName, RequestBody } from '../types'
+
+const levelDb = (fastify: FastifyInstance, name: string) => ({
+  get: async (): Promise<ProductName[]> => {
+    const data = (await fastify.level.db.get(name)) as string
+    return (data ? data.split(',') : []) as ProductName[]
+  },
+  set: async (data: ProductName[]): Promise<void> => {
+    await fastify.level.db.put(name, data.toString())
+  },
+})
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
+  const db = levelDb(fastify, 'cart')
+
   fastify.get('/cart', async function (req, reply) {
-    const data = (await this.level.db.get('cart')) as string
-    const cart = data ? data.split(',') : []
-    reply.send({ data: cart })
+    const data = await db.get()
+    reply.send({ data })
   })
 
   fastify.post('/cart', async function (req, reply) {
-    const payload = JSON.parse(req.body as string) as { data: string }
-    const data = (await this.level.db.get('cart')) as string
-    const cart = data ? [...data.split(','), payload.data] : [payload.data]
-    await fastify.level.db.put('cart', cart.toString())
+    const payload = JSON.parse(req.body as string) as RequestBody
+    const data = await db.get()
+    await db.set([...data, payload.data])
     reply.send(req.body)
   })
 
   fastify.delete('/cart', async function (req, reply) {
-    const payload = JSON.parse(req.body as string) as { data: string }
-    const data = (await this.level.db.get('cart')) as string
-    const cart = data ? data.split(',') : []
-    const newCart = cart.toSpliced(cart.lastIndexOf(payload.data), 1)
-    await fastify.level.db.put('cart', newCart.toString())
+    const payload = JSON.parse(req.body as string) as RequestBody
+    const data = await db.get()
+    await db.set(data.toSpliced(data.lastIndexOf(payload.data), 1))
     reply.send(req.body)
   })
 
