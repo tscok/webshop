@@ -1,6 +1,7 @@
 import fastifyPlugin from 'fastify-plugin'
 import { FastifyInstance, FastifyPluginCallback } from 'fastify'
 import { ProductName, RequestBody } from '../types'
+import { getCart } from '../utils/get-cart'
 
 const levelDb = (fastify: FastifyInstance, name: string) => ({
   get: async (): Promise<ProductName[]> => {
@@ -17,7 +18,7 @@ const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
 
   fastify.get('/cart', async function (req, reply) {
     const data = await db.get()
-    reply.send({ data })
+    reply.send({ data: getCart(data) })
   })
 
   fastify.post('/cart', async function (req, reply) {

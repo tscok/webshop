@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useCallback } from 'react'
-import { CartItem, ProductName } from '../../../types'
-import { useCartItems } from '../hooks/use-cart-items'
+import { Cart, CartItem, ProductName } from '../../../types'
 import cartClient from '../api/cart-client'
 import useQuery from '../hooks/use-query'
 
@@ -11,20 +10,13 @@ type CartType = {
   total: number
 }
 
-// TODO: move calculation to server
-function getCartTotal(items: CartItem[]): number {
-  return items.reduce(
-    (total, item) => total + (item.count * item.price - item.discount),
-    0
-  )
-}
+const DEFAULT_CART: Cart = { items: [], total: 0 }
 
 export const CartContext = createContext<CartType>({} as CartType)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
   const queryCallback = useCallback(async () => await cartClient.getCart(), [])
-  const { data = [], refetch } = useQuery(queryCallback)
-  const items = useCartItems(data)
+  const { data = DEFAULT_CART, refetch } = useQuery(queryCallback)
 
   const handleAdd = async (name: ProductName) => {
     await cartClient.addItem(name)
@@ -37,10 +29,10 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   }
 
   const value = {
-    items,
+    items: data.items,
     onAdd: handleAdd,
     onRemove: handleRemove,
-    total: getCartTotal(items),
+    total: data.total,
   }
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
