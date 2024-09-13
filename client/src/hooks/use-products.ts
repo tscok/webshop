@@ -7,6 +7,6 @@ export function useProducts() {
     async () => await productsClient.getProducts(),
     []
   )
-  const { data } = useQuery(callback)
+  const { data = [] } = useQuery(callback)
   return data
 }

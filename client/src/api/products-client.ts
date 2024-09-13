@@ -1,8 +1,8 @@
-import { ProductList } from '../../../types'
+import { Product } from '../../../types'
 import ApiClient from './api-client'
 
 class ProductsClient extends ApiClient {
-  async getProducts(): Promise<ProductList> {
+  async getProducts(): Promise<Product[]> {
     return this.get('/products')
   }
 }
