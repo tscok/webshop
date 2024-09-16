@@ -1,22 +1,22 @@
 import { createContext, PropsWithChildren, useCallback } from 'react'
-import { Cart, CartItem, ProductName } from '../../../types'
+import { Cart, ProductName } from '../../../types'
 import cartClient from '../api/cart-client'
 import useQuery from '../hooks/use-query'
 
 type CartType = {
-  items: CartItem[]
-  onAdd: (name: ProductName) => void
-  onRemove: (name: ProductName) => void
-  total: number
+  cart: Cart
+  onAdd: (name: ProductName) => Promise<void>
+  onRemove: (name: ProductName) => Promise<void>
 }
 
-const DEFAULT_CART: Cart = { items: [], total: 0 }
+const DEFAULT_DATA: Cart = { count: 0, items: [], total: 0 }
 
 export const CartContext = createContext<CartType>({} as CartType)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const queryCallback = useCallback(async () => await cartClient.getCart(), [])
-  const { data = DEFAULT_CART, refetch } = useQuery(queryCallback)
+  const { data: cart = DEFAULT_DATA, refetch } = useQuery(
+    useCallback(async () => await cartClient.getCart(), [])
+  )
 
   const handleAdd = async (name: ProductName) => {
     await cartClient.addItem(name)
@@ -28,11 +28,10 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     refetch()
   }
 
-  const value = {
-    items: data.items,
+  const value: CartType = {
+    cart,
     onAdd: handleAdd,
     onRemove: handleRemove,
-    total: data.total,
   }
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

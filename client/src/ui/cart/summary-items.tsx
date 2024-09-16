@@ -4,9 +4,9 @@ import { formatMoney } from '../../utils/format-money'
 import { SummaryControls } from './summary-controls'
 
 export const SummaryItems = () => {
-  const { items, onAdd, onRemove } = useCartContext()
+  const { cart, onAdd, onRemove } = useCartContext()
 
-  if (items.length === 0) {
+  if (cart.items.length === 0) {
     return (
       <ListItem disableGutters>
         <ListItemText secondary="Cart is empty." />
@@ -14,17 +14,21 @@ export const SummaryItems = () => {
     )
   }
 
-  return items.map(({ name, count, discount }) => (
-    <ListItem key={name} disableGutters>
-      <ListItemText
-        primary={`${name} (${count})`}
-        secondary={discount ? `${formatMoney(discount)} discount` : ``}
-        sx={{ my: 0.5 }}
-      />
-      <SummaryControls
-        onDecrease={() => onRemove(name)}
-        onIncrease={() => onAdd(name)}
-      />
-    </ListItem>
-  ))
+  return cart.items.map((item) => {
+    const price = formatMoney(item.price)
+    const extra = item.discount > 0 ? `- ${formatMoney(item.discount)}` : ''
+    return (
+      <ListItem key={item.name} disableGutters>
+        <ListItemText
+          primary={item.name}
+          secondary={`${item.count} * ${price} ${extra}`}
+          sx={{ my: 0.5 }}
+        />
+        <SummaryControls
+          onDecrease={() => onRemove(item.name)}
+          onIncrease={() => onAdd(item.name)}
+        />
+      </ListItem>
+    )
+  })
 }

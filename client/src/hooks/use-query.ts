@@ -3,31 +3,31 @@ import { useCallback, useEffect, useState } from 'react'
 type QueryState<T> = {
   data?: T
   error?: Error
-  status: QueryStatus
+  status: 'loading' | 'idle'
 }
-
-export type QueryStatus = 'loading' | 'idle'
 
 export default function useQuery<T>(request: () => Promise<T>) {
   const [state, setState] = useState<QueryState<T>>({ status: 'idle' })
 
+  const updateState = useCallback(
+    (update: Partial<QueryState<T>>) =>
+      setState((prev) => ({ ...prev, ...update })),
+    []
+  )
+
   const fetchCallback = useCallback(async () => {
     try {
-      setState({ status: 'loading' })
+      updateState({ status: 'loading' })
       const response = await request()
-      setState({ data: response, status: 'idle' })
+      updateState({ data: response, status: 'idle' })
     } catch (e) {
-      setState({ error: e as Error, status: 'idle' })
+      updateState({ error: e as Error, status: 'idle' })
     }
-  }, [request])
+  }, [request, updateState])
 
   useEffect(() => {
     fetchCallback()
   }, [fetchCallback])
 
-  function refetch() {
-    fetchCallback()
-  }
-
-  return { ...state, refetch }
+  return { ...state, refetch: () => fetchCallback() }
 }

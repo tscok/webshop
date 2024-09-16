@@ -27,6 +27,7 @@ export type CartItem = {
 }
 
 export type Cart = {
+  count: number
   items: CartItem[]
   total: number
 }

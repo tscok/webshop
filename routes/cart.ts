@@ -1,24 +1,15 @@
 import fastifyPlugin from 'fastify-plugin'
-import { FastifyInstance, FastifyPluginCallback } from 'fastify'
-import { ProductName, RequestBody } from '../types'
-import { getCart } from '../utils/get-cart'
-
-const levelDb = (fastify: FastifyInstance, name: string) => ({
-  get: async (): Promise<ProductName[]> => {
-    const data = (await fastify.level.db.get(name)) as string
-    return (data ? data.split(',') : []) as ProductName[]
-  },
-  set: async (data: ProductName[]): Promise<void> => {
-    await fastify.level.db.put(name, data.toString())
-  },
-})
+import { FastifyPluginCallback } from 'fastify'
+import { RequestBody } from '../types'
+import { createCart } from '../utils/create-cart'
+import { dbHelpers } from '../utils/db-helpers'
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
-  const db = levelDb(fastify, 'cart')
+  const db = dbHelpers(fastify, 'cart')
 
   fastify.get('/cart', async function (req, reply) {
     const data = await db.get()
-    reply.send({ data: getCart(data) })
+    reply.send({ data: createCart(data) })
   })
 
   fastify.post('/cart', async function (req, reply) {

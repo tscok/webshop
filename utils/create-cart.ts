@@ -3,7 +3,7 @@ import { getProductCount } from './get-product-count'
 import { getCartTotal } from './get-cart-total'
 import { productMap } from './product-map'
 
-export function getCart(productNames: ProductName[]): Cart {
+export function createCart(productNames: ProductName[]): Cart {
   const productCount = getProductCount(productNames)
 
   const items = [...new Set(productNames)].map<CartItem>((productName) => {
@@ -18,6 +18,7 @@ export function getCart(productNames: ProductName[]): Cart {
   })
 
   return {
+    count: productNames.length,
     items,
     total: getCartTotal(items),
   }

@@ -2,6 +2,7 @@ import 'dotenv/config'
 import Fastify from 'fastify'
 import plugins from './plugins'
 import routes from './routes'
+import { dbHelpers } from './utils/db-helpers'
 
 const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
@@ -15,10 +16,10 @@ fastify.register(routes.cart)
 fastify.register(routes.products)
 
 async function start() {
+  const db = dbHelpers(fastify, 'cart')
   try {
     await fastify.listen({ port: 3000, host: HOST })
-    // start with empty `cart`
-    await fastify.level.db.put('cart', '')
+    await db.set([])
     fastify.log.info(`Server is now listening on ${HOST}`)
   } catch (error) {
     if (error) {
