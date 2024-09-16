@@ -4,7 +4,7 @@ import { formatMoney } from '../../utils/format-money'
 import { SummaryItems } from './summary-items'
 
 export const Summary = () => {
-  const { total } = useCartContext()
+  const { cart } = useCartContext()
 
   return (
     <Paper sx={{ p: 3 }}>
@@ -18,7 +18,7 @@ export const Summary = () => {
           variant="subtitle1"
           fontWeight={500}
         >
-          {total > 0 && `Total ${formatMoney(total)}`}
+          {cart.total > 0 && `Total ${formatMoney(cart.total)}`}
         </Typography>
       </List>
     </Paper>
