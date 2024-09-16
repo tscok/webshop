@@ -114,6 +114,7 @@
     "./types.ts",
     "plugins/*",
     "routes/*",
+    "utils/*",
   ],
   "exclude": ["client", "node_modules"],
 }
