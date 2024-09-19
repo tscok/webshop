@@ -1,19 +1,21 @@
 {
   "dependencies": {
-    "@fastify/cookie": "^9.4.0",
-    "@fastify/cors": "^9.0.1",
-    "@fastify/leveldb": "^5.1.0",
-    "@fastify/session": "^10.9.0",
-    "@fastify/static": "^7.0.4",
+    "@fastify/cookie": "^10.0.0",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/leveldb": "^6.0.0",
+    "@fastify/redis": "^7.0.0",
+    "@fastify/session": "^11.0.0",
+    "@fastify/static": "^8.0.0",
     "dotenv": "^16.4.5",
-    "fastify": "^4.28.1",
-    "session-file-store": "^1.5.0"
+    "fastify": "^5.0.0",
+    "ioredis": "^5.4.1"
   },
   "devDependencies": {
-    "@types/node": "^22.5.2",
-    "nodemon": "^3.1.4",
+    "@types/ioredis": "^5.0.0",
+    "@types/node": "^22.5.5",
+    "nodemon": "^3.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   },
   "scripts": {
     "build": "NODE_ENV=production tsc -p tsconfig.json",

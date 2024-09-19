@@ -8,12 +8,14 @@ const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
 const fastify = Fastify({ logger: true })
 
+fastify.register(plugins.redis)
 fastify.register(plugins.session)
 fastify.register(plugins.client)
 fastify.register(plugins.database)
 
 fastify.register(routes.cart)
 fastify.register(routes.products)
+fastify.register(routes.session)
 
 async function start() {
   const db = dbHelpers(fastify, 'cart')
