@@ -1,11 +1,4 @@
-export type Discount = {
-  amount: number
-  count: number
-  deal: string
-  productName: ProductName
-}
-
-export type DiscountList = Partial<Record<ProductName, Discount>>
+export type ProductName = 'coffee' | 'orange' | 'bread'
 
 export type Product = {
   name: ProductName
@@ -13,23 +6,23 @@ export type Product = {
   discount?: Discount
 }
 
-export type ProductCount = Partial<Record<ProductName, number>>
-
-export type ProductList = Record<ProductName, Product>
-
-export type ProductName = 'coffee' | 'orange' | 'bread'
-
-export type CartItem = {
+export type Discount = {
+  amount: number
   count: number
-  discount: number
-  name: ProductName
-  price: number
+  info: string
 }
 
 export type Cart = {
   count: number
   items: CartItem[]
   total: number
+}
+
+export type CartItem = {
+  count: number
+  discount: number
+  name: ProductName
+  price: number
 }
 
 export type RequestBody<T extends unknown> = { data: T }

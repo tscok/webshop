@@ -1,5 +1,5 @@
 import { Cart, CartItem, Discount, Product, ProductName } from '../types'
-import { productMap } from './product-map'
+import { productMap } from '../data'
 
 const getDiscount = (productCount: number, productDiscount?: Discount) => {
   if (!productDiscount || productDiscount.count > productCount) return 0
