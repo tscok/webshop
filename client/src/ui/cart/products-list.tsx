@@ -13,7 +13,7 @@ export const ProductsList = () => {
         <ProductItem
           key={product.name}
           {...product}
-          message={product.discount?.deal}
+          message={product.discount?.info}
           onAddToCart={() => onAdd(product.name)}
         />
       ))}

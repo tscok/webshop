@@ -1,6 +1,6 @@
 import { FastifyPluginCallback } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
-import { productMap } from '../utils/product-map'
+import { productMap } from '../data'
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.get('/products', (req, reply) => {
