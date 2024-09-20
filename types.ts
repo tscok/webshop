@@ -32,4 +32,4 @@ export type Cart = {
   total: number
 }
 
-export type RequestBody = { data: ProductName }
+export type RequestBody<T extends unknown> = { data: T }

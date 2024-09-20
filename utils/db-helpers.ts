@@ -1,12 +1,11 @@
 import { FastifyInstance } from 'fastify'
-import { ProductName } from '../types'
 
-export const dbHelpers = (fastify: FastifyInstance, name: string) => ({
-  get: async (): Promise<ProductName[]> => {
+export const dbHelpers = (fastify: FastifyInstance) => ({
+  get: async <T extends unknown>(name: string, defaultValue: T): Promise<T> => {
     const data = (await fastify.level.db.get(name)) as string
-    return (data ? data.split(',') : []) as ProductName[]
+    return data ? JSON.parse(data) : defaultValue
   },
-  set: async (data: ProductName[]): Promise<void> => {
-    await fastify.level.db.put(name, data.toString())
+  set: async <T extends unknown>(name: string, data: T): Promise<void> => {
+    await fastify.level.db.put(name, JSON.stringify(data))
   },
 })
