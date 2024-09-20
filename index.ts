@@ -3,6 +3,7 @@ import Fastify from 'fastify'
 import plugins from './plugins'
 import routes from './routes'
 import { dbHelpers } from './utils/db-helpers'
+import { ProductName } from './types'
 
 const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
@@ -18,10 +19,10 @@ fastify.register(routes.products)
 fastify.register(routes.session)
 
 async function start() {
-  const db = dbHelpers(fastify, 'cart')
+  const db = dbHelpers(fastify)
   try {
     await fastify.listen({ port: 3000, host: HOST })
-    await db.set([])
+    await db.set<ProductName[]>('cart', [])
     fastify.log.info(`Server is now listening on ${HOST}`)
   } catch (error) {
     if (error) {
