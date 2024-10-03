@@ -26,3 +26,5 @@ export type CartItem = {
 }
 
 export type RequestBody<T extends unknown> = { data: T }
+
+export type User = { id: string; name: string }
