@@ -1,5 +1,5 @@
 import cart from './cart'
 import products from './products'
-import session from './session'
+import auth from './auth'
 
-export default { cart, products, session }
+export default { cart, products, auth }

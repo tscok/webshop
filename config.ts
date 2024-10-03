@@ -11,7 +11,9 @@ function env(key: string): string {
 
 export const ROOT_PATH = path.join(__dirname)
 
-export const SESSION_KEY = env('SESSION_KEY')
+export const SESSION_SECRET = env('SESSION_SECRET')
 export const SESSION_TTL = 1000 * 60 * 60 * 24 // 24 hours
+
+export const COOKIE_NAME = 'session-id'
 
 export const FRONTEND_URL = 'http://localhost:3000'

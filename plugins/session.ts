@@ -2,9 +2,9 @@ import fastifySession from '@fastify/session'
 import { fastifyCookie } from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyPlugin from 'fastify-plugin'
-import { SESSION_KEY, SESSION_TTL } from '../config'
-import { redisStore } from './redis'
 import { FastifyPluginCallback } from 'fastify'
+import { redisStore } from '../utils/redis-store'
+import { SESSION_SECRET, SESSION_TTL } from '../config'
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   // fastifyCookie is required by fastifySession
@@ -12,8 +12,13 @@ const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
 
   // session handling
   fastify.register(fastifySession, {
-    cookie: { maxAge: SESSION_TTL, secure: false },
-    secret: SESSION_KEY,
+    cookie: {
+      maxAge: SESSION_TTL,
+      sameSite: 'none',
+      secure: 'auto',
+      path: '/',
+    },
+    secret: SESSION_SECRET,
     store: redisStore,
     saveUninitialized: false,
   })
