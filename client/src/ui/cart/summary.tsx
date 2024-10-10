@@ -1,16 +1,35 @@
-import { Divider, List, ListItem, Paper, Typography } from '@mui/material'
+import {
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+} from '@mui/material'
 import { useCartContext } from '../../hooks/use-cart-context'
 import { formatMoney } from '../../utils/format-money'
-import { SummaryItems } from './summary-items'
+import { SummaryItem } from './summary-item'
 
 export const Summary = () => {
-  const { cart } = useCartContext()
+  const { cart, onAdd, onRemove } = useCartContext()
 
   return (
     <Paper sx={{ p: 3 }}>
       <List disablePadding subheader="Cart">
         <Divider component={ListItem} disableGutters />
-        <SummaryItems />
+        {cart.items.length === 0 && (
+          <ListItem disableGutters>
+            <ListItemText secondary="Cart is empty." />
+          </ListItem>
+        )}
+        {cart.items.map((item) => (
+          <SummaryItem
+            key={item.name}
+            item={item}
+            onAdd={() => onAdd(item.name)}
+            onRemove={() => onRemove(item.name)}
+          />
+        ))}
         <Divider component={ListItem} disableGutters disablePadding />
         <Typography
           component={ListItem}

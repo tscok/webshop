@@ -1,18 +1,15 @@
 import { Box, Button, Paper, Skeleton, Stack, Typography } from '@mui/material'
 import { formatMoney } from '../../utils/format-money'
+import { Product } from '../../../../types'
 
 const mediaSize = 90
 
 export const ProductItem = ({
-  message,
-  name,
-  onAddToCart,
-  price,
+  onAdd,
+  product,
 }: {
-  message?: string
-  name: string
-  onAddToCart: () => void
-  price: number
+  onAdd: () => void
+  product: Product
 }) => (
   <Paper sx={{ display: 'flex' }} variant="outlined">
     <Skeleton
@@ -32,17 +29,17 @@ export const ProductItem = ({
       <Box flex={1}>
         <Stack alignItems="end" direction="row" spacing={2}>
           <Typography component="div" variant="h5">
-            {name}
+            {product.name}
           </Typography>
           <Typography component="div" variant="subtitle1">
-            {formatMoney(price)}
+            {formatMoney(product.price)}
           </Typography>
         </Stack>
         <Typography component="div" variant="body2" color="textSecondary">
-          {message ?? <Skeleton animation={false} />}
+          {product.discount?.info ?? <Skeleton animation={false} />}
         </Typography>
       </Box>
-      <Button onClick={onAddToCart} variant="contained">
+      <Button onClick={onAdd} variant="contained">
         Add to Cart
       </Button>
     </Stack>
