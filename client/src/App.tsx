@@ -3,6 +3,7 @@ import { QueryClientProvider, queryClient } from './state/query'
 import { CheckoutButton, ProductsPage } from './ui/cart'
 import { Header, Layout, Main } from './ui/layout'
 import { ThemeProvider } from './ui/theme-provider'
+import { UserProfile } from './ui/user/user-profile'
 
 export const App = () => (
   <ThemeProvider>
@@ -10,6 +11,7 @@ export const App = () => (
       <CartProvider>
         <Layout>
           <Header>
+            <UserProfile />
             <CheckoutButton />
           </Header>
           <Main>

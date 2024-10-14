@@ -1,4 +1,4 @@
-import { Cart, Product, ProductName } from '../../../types'
+import { Cart, Product, ProductName, User } from '../../../types'
 import Client from './client'
 
 const client = new Client()
@@ -18,5 +18,17 @@ export default class Api {
 
   getProducts(): Promise<Product[]> {
     return client.get('/products')
+  }
+
+  getUser(): Promise<User> {
+    return client.get('/auth/me')
+  }
+
+  login(username: string): Promise<string> {
+    return client.post('/auth/login', username)
+  }
+
+  logout(): Promise<string> {
+    return client.get('/auth/logout')
   }
 }
