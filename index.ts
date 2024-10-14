@@ -4,7 +4,6 @@ import plugins from './plugins'
 import routes from './routes'
 import { dbHelpers } from './utils/db-helpers'
 import { ProductName } from './types'
-import { userStore } from './utils/user-store'
 
 const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
@@ -18,15 +17,6 @@ fastify.register(plugins.database)
 fastify.register(routes.auth)
 fastify.register(routes.cart)
 fastify.register(routes.products)
-
-fastify.addHook('preHandler', (request, reply, done) => {
-  if (request.url === '/') {
-    if (!userStore.getSessionId(request)) {
-      return reply.redirect('/auth/login')
-    }
-  }
-  done()
-})
 
 async function start() {
   const db = dbHelpers(fastify)

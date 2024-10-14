@@ -1,4 +1,11 @@
-import { AppBar, Box, Skeleton, Toolbar, Typography } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Skeleton,
+  Stack,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import { PropsWithChildren } from 'react'
 
 export const Header = ({ children }: PropsWithChildren) => (
@@ -17,7 +24,9 @@ export const Header = ({ children }: PropsWithChildren) => (
         <Skeleton animation={false} />
       </Typography>
       <Box flex={1} />
-      <div>{children}</div>
+      <Stack alignItems="center" direction="row" spacing={1}>
+        {children}
+      </Stack>
     </Toolbar>
   </AppBar>
 )
