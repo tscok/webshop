@@ -2,43 +2,43 @@ import { FastifyPluginCallback, FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 import { redisStore } from '../utils/redis-store'
 import { COOKIE_NAME } from '../config'
-import { RequestBody, User } from '../types'
+import { getAuthenticatedUser, authUrl } from '../auth/google-auth'
+import { User } from '../types'
 
-function getSessionId(request: FastifyRequest): string {
+function getUserIdFromCookie(request: FastifyRequest): string {
   return request.cookies[COOKIE_NAME] ?? ''
-}
-
-function getUserData(request: FastifyRequest): User {
-  const payload = JSON.parse(request.body as string) as RequestBody<string>
-  return {
-    id: `sess:${request.session.sessionId}`,
-    name: payload.data,
-  }
 }
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   fastify.get('/auth/me', async (request, reply) => {
-    const sessionId = getSessionId(request)
-    const currentUser = await redisStore.get(sessionId)
-    reply.send({ data: currentUser })
+    const userId = getUserIdFromCookie(request)
+    const user = await redisStore.get<User>(userId)
+    reply.send({ data: user })
   })
 
-  fastify.post('/auth/login', async (request, reply) => {
-    const sessionId = getSessionId(request)
-    if (sessionId) return reply.send({ data: 'OK' })
+  /** Handle response from Google */
+  fastify.get('/oauth2', async (request, reply) => {
+    try {
+      const { code } = request.query as { code: string }
+      if (!code) throw new Error('invalid query param')
+      const user = await getAuthenticatedUser(code)
+      await redisStore.set(user.uid, user)
+      reply.cookie(COOKIE_NAME, user.uid, { path: '/' })
+      reply.redirect('/')
+    } catch (e) {
+      reply.status(403).send(e)
+    }
+  })
 
-    const user = getUserData(request)
-    const status = await redisStore.set(user.id, user)
-    reply.cookie(COOKIE_NAME, user.id, { path: '/' })
-    reply.send({ data: status })
+  /** Redirect to Google */
+  fastify.get('/auth/login', (request, reply) => {
+    reply.redirect(authUrl)
   })
 
   fastify.get('/auth/logout', async (request, reply) => {
-    const sessionId = getSessionId(request)
-    if (!sessionId) return reply.send({ data: 'OK' })
-
-    await redisStore.destroy(sessionId)
-    reply.cookie(COOKIE_NAME, '', { path: '/' })
+    const userId = getUserIdFromCookie(request)
+    await redisStore.destroy(userId)
+    reply.clearCookie(COOKIE_NAME)
     reply.send({ data: 'OK' })
   })
 
