@@ -22,16 +22,17 @@ export default class Client {
   // Uses arrow functions to get `this` working as expected
   // https://www.typescriptlang.org/docs/handbook/2/classes.html#arrow-functions
   get = async <T>(path: string) => {
-    return this.makeRequest<T>(path, { method: 'GET' })
-  }
-
-  post = async <T>(path: string, data: T) => {
-    const init = this.getRequestInit<T>('POST', data)
+    const init = this.getRequestInit('GET')
     return this.makeRequest<T>(path, init)
   }
 
-  delete = async <T>(path: string, data: T) => {
-    const init = this.getRequestInit<T>('DELETE', data)
+  post = async <T>(path: string, data: string) => {
+    const init = this.getRequestInit('POST', data)
+    return this.makeRequest<T>(path, init)
+  }
+
+  delete = async <T>(path: string, data: string) => {
+    const init = this.getRequestInit('DELETE', data)
     return this.makeRequest<T>(path, init)
   }
 }

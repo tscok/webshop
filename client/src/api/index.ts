@@ -4,31 +4,31 @@ import Client from './client'
 const client = new Client()
 
 export default class Api {
-  getCart(): Promise<Cart> {
-    return client.get('/cart')
+  getCart() {
+    return client.get<Cart>('/cart')
   }
 
-  addCartItem(name: ProductName): Promise<ProductName> {
-    return client.post('/cart', name)
+  addCartItem(name: ProductName) {
+    return client.post<ProductName>('/cart', name)
   }
 
   delCartItem(name: ProductName): Promise<ProductName> {
     return client.delete('/cart', name)
   }
 
-  getProducts(): Promise<Product[]> {
-    return client.get('/products')
+  getProducts() {
+    return client.get<Product[]>('/products')
   }
 
-  getUser(): Promise<User> {
-    return client.get('/auth/me')
+  getUser() {
+    return client.get<User>('/auth/me')
   }
 
-  login(username: string): Promise<string> {
-    return client.post('/auth/login', username)
+  login() {
+    return Promise.resolve((window.location.href = '/auth/login'))
   }
 
-  logout(): Promise<string> {
-    return client.get('/auth/logout')
+  logout() {
+    return client.get<void>('/auth/logout')
   }
 }
