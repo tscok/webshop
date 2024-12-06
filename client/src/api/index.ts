@@ -1,34 +1,28 @@
-import { Cart, Product, ProductName, User } from '../../../types'
+import { Cart, Product, ProductName } from '../../../types'
 import Client from './client'
 
-const client = new Client()
-
-export default class Api {
-  getCart() {
-    return client.get<Cart>('/cart')
+export default class Api extends Client {
+  constructor(token?: string) {
+    super(token)
   }
 
-  addCartItem(name: ProductName) {
-    return client.post<ProductName>('/cart', name)
+  getCart = (): Promise<Cart> => {
+    return this.get('/cart')
   }
 
-  delCartItem(name: ProductName): Promise<ProductName> {
-    return client.delete('/cart', name)
+  addCartItem = (name: ProductName): Promise<ProductName> => {
+    return this.post('/cart', name)
   }
 
-  getProducts() {
-    return client.get<Product[]>('/products')
+  delCartItem = (name: ProductName): Promise<ProductName> => {
+    return this.delete('/cart', name)
   }
 
-  getUser() {
-    return client.get<User>('/auth/me')
+  getProducts = (): Promise<Product[]> => {
+    return this.get('/products')
   }
 
-  login() {
-    return Promise.resolve((window.location.href = '/auth/login'))
-  }
-
-  logout() {
-    return client.get<void>('/auth/logout')
+  verifyUser = (): Promise<string> => {
+    return this.post('/api/firebase/verify')
   }
 }

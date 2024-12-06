@@ -1,10 +1,7 @@
 import { createContext, PropsWithChildren } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { Cart, Product, ProductName } from '../../../types'
-import Api from '../api'
-import { queryClient } from '../state/query'
-
-const api = new Api()
+import { queryClient, useMutation, useQuery } from '../libs/tanstack'
+import { useApi } from '../hooks/use-api'
 
 type CartType = {
   cart: Cart
@@ -18,6 +15,8 @@ const DEFAULT_CART: Cart = { count: 0, items: [], total: 0 }
 export const CartContext = createContext<CartType>({} as CartType)
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
+  const api = useApi()
+
   const { data: cart = DEFAULT_CART } = useQuery({
     queryKey: ['cart'],
     queryFn: api.getCart,
