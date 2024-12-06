@@ -1,8 +1,9 @@
 import fastifyPlugin from 'fastify-plugin'
 import { FastifyPluginCallback } from 'fastify'
-import { ProductName, RequestBody } from '../types'
+import { ProductName } from '../types'
 import { createCart } from '../utils/create-cart'
 import { dbHelpers } from '../utils/db-helpers'
+import { jsonParse } from '../utils/json-parse'
 
 const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   const db = dbHelpers(fastify)
@@ -13,16 +14,16 @@ const pluginCallback: FastifyPluginCallback = (fastify, opts, done) => {
   })
 
   fastify.post('/cart', async function (req, reply) {
-    const payload = JSON.parse(req.body as string) as RequestBody<ProductName>
+    const payload = jsonParse<ProductName>(req.body)
     const data = await db.get<ProductName[]>('cart', [])
-    await db.set('cart', [...data, payload.data])
+    await db.set('cart', [...data, payload])
     reply.send(req.body)
   })
 
   fastify.delete('/cart', async function (req, reply) {
-    const payload = JSON.parse(req.body as string) as RequestBody<ProductName>
+    const payload = jsonParse<ProductName>(req.body)
     const data = await db.get<ProductName[]>('cart', [])
-    await db.set('cart', data.toSpliced(data.lastIndexOf(payload.data), 1))
+    await db.set('cart', data.toSpliced(data.lastIndexOf(payload), 1))
     reply.send(req.body)
   })
 
